@@ -288,7 +288,7 @@
 			}
 			
 			if(counter > 300 && counter<390){
-				//land.speedX = 0;
+				land.speedX = 0;
 				pole.speedX = 0;
 				runnerBoy.moveX();
 				audio.pause();
@@ -357,7 +357,7 @@
 				var distance = Math.sqrt(x1x2 + y1y2);
 				if(distance <= 101.26){
 					hurdle.speedX = 0;
-					//land.speedX = 0;
+					land.speedX = 0;
 					defeated = true;
 					if(defeated == true){
 						defeated = false;
@@ -393,7 +393,7 @@
 				var distance = Math.sqrt(x1x2 + y1y2);
 				if(distance <= 101.26){
 					snail.speedX = 0;
-					//land.speedX = 0;
+					land.speedX = 0;
 					defeated = true;
 					if(defeated == true){
 						defeated = false;
@@ -414,8 +414,8 @@
 				}
 			}
 //------------------------------------------------------------------------------------------------------------------------------------------
-			//land.move();
-			//drawObject(land);
+			land.move();
+			drawObject(land);
 			
 		}
 
