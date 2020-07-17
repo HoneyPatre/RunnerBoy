@@ -1,0 +1,439 @@
+<html>
+<body>
+	<audio src="backgroundMusic.mp3" id="my_audio" loop="loop"></audio>
+	<canvas id= "runnerCanvas" width = "1515" height="700" style="border :2px solid"></canvas>
+
+	<style>
+		button {
+  			margin-top: 20px;
+  			text-align: center;
+ 			font-weight: bold;
+ 			padding: 10px 70px;
+  			background: salmon;
+		}
+		button:hover{
+			background: lightsalmon;
+		}
+	</style>
+
+	<script type="text/javascript">
+		
+		function restartGame(){
+			var btn = document.createElement("button");
+			btn.innerHTML = "Restart Game";
+			document.body.appendChild(btn);
+			btn.style.position = "absolute";
+			btn.style.left = "508px";
+			btn.style.top = "400px";
+			btn.addEventListener('click', function(){document.location.reload(true);})
+			return btn;
+		}
+
+		function quitGame(){
+			var btn = document.createElement("button");
+			btn.innerHTML = "Quit Game";
+			document.body.appendChild(btn);
+			btn.style.position = "absolute";
+			btn.style.left = "808px";
+			btn.style.top = "400px";
+			btn.addEventListener('click', function(){window.opener = self; window.close();})
+			return btn;
+		}
+		var ctx = document.getElementById("runnerCanvas").getContext("2d");
+		var width = 1515;
+		var height = 320;
+		ctx.fillStyle = "#1E90FF";
+		ctx.fillRect(0,0,1515,700);
+		ctx.fillStyle = "#000000";
+		ctx.font = "50px Arial";
+		ctx.fillText("Runner Boy", 100, 100);
+
+		var audio = new Audio('jumpMusic.mp3');
+		function playJumpAudio(){
+	        audio.play();
+		}
+		var audiob = new Audio('backgroundMusic.mp3');
+		function StartGame(){
+			audiob.play();
+		}
+		var audiogo = new Audio('gameoverMusic.mp3');
+// Runner Boy ------------------------------------------------------------------------------------------------------------------------------
+
+		var imgs = [];
+		var runnerBoyImages = ["pos1_NB.png","pos1_NB.png","pos2_NB.png","pos2_NB.png","pos3_NB.png","pos3_NB.png","pos4_NB.png","pos4_NB.png","pos5_NB.png","pos5_NB.png","pos6_NB.png","pos6_NB.png","pos7_NB.png","pos7_NB.png","pos8_NB.png","pos8_NB.png"];
+		var runnerBoy = {};
+		runnerBoy.images = imgs;
+
+		for(var i=0; i<runnerBoyImages.length;i++){
+			var img = new Image();
+			img.src = runnerBoyImages[i];
+			imgs.push(img);
+		}
+
+		runnerBoy.x = 500;
+		runnerBoy.y = 590;
+		runnerBoy.width = 231/1.5;
+		runnerBoy.height = 334/1.5;
+		runnerBoy.speedX = 0;
+		runnerBoy.speedY = 0;
+		var gravity = 5.7;
+
+		runnerBoy.move = function(){
+			this.speedY = this.speedY + gravity;
+			this.y = this.y + this.speedY;
+			if(this.y > 590){
+				this.y = 590;
+				this.speedY = 0;
+			}
+		}
+
+		runnerBoy.moveX = function(){
+			this.x = this.x + this.speedX;
+			if(counter > 200){
+				this.speedX = 12;
+			}
+		}
+
+// Land ------------------------------------------------------------------------------------------------------------------------------------
+		
+		/*var imgl = new Image();
+		imgl.src = "grass_NB.png";
+		var land = {};
+		land.width = 815*2;
+		land.height = 300;
+		land.images = [imgl];
+		land.x = 0;
+		land.y = 550;
+		land.speedX = -5;
+		land.speedY = 0;
+		land.repeatX = 1;
+		land.move = function(){
+			this.x = this.x + this.speedX;
+			if(this.x < -this.width/2){
+				this.x += this.width;
+			}
+		}*/
+
+//Pole-----------------------------------------------------------------------------------------------------------------------------------
+		
+		var poleArray = [];
+		var imgp = new Image();
+		imgp.src = "pole_NB.png";
+		var pole = {};
+		pole.isActive = false;
+		pole.images = [imgp];
+		pole.width = 40;
+		pole.height = 400;
+		pole.x = 1325;
+		pole.y = 550;
+		pole.speedX = -5;
+		pole.speedY = 0;
+		pole.move = function(){
+			this.x = this.x + this.speedX;
+		}
+	
+// Hurdle : Mashroom ---------------------------------------------------------------------------------------------------------------------- 
+		
+		var runnerHurdleImages = [];
+		var imgh = new Image();
+		imgh.src = "hurdle_NB.png";
+
+		function getHurdle(){
+		var hurdle = {};
+		hurdle.images = [imgh];
+		hurdle.isActive = true;
+		hurdle.x= 1515;
+		hurdle.y= 650;
+		hurdle.width=170;
+		hurdle.height=120;
+		hurdle.speedX= -15;
+		hurdle.move = function(){
+			this.x = this.x + this.speedX;
+			if(this.x < -100){
+				this.isActive = false;
+			}
+		}
+		hurdle.stop = function(){
+			this.isActive = false;
+		}
+		return hurdle;
+	}
+
+// Hurdle : Snail --------------------------------------------------------------------------------------------------------------------------
+
+		var runnerSnailImages = ["snail1_NB.png","snail1_NB.png","snail1_NB.png","snail1_NB.png","snail1_NB.png","snail1_NB.png","snail1_NB.png","snail1_NB.png","snail2_NB.png","snail2_NB.png","snail2_NB.png","snail2_NB.png","snail2_NB.png","snail2_NB.png","snail2_NB.png","snail2_NB.png"];
+
+		var oneMoreSpareArray = [];
+		function getSnail(){
+			var imgsn = [];
+			var snail = {};
+			snail.images = imgsn;
+			for(var i=0; i<runnerSnailImages.length;i++){
+			var simg = new Image();
+			simg.src = runnerSnailImages[i];
+			imgsn.push(simg);
+			}
+			snail.isActive = true;
+			snail.width = 306/3;
+			snail.height = 298/2;
+			snail.x = 1515;
+			snail.y = 650;
+			snail.speedX = -20;
+			snail.speedY = 0;
+			snail.move = function(){
+				this.x = this.x + this.speedX;
+				if(this.x < -100){
+					snail.isActive = false;
+				}
+			}
+			return snail;
+		}
+
+// Pink Birds-------------------------------------------------------------------------------------------------------------------------------
+	
+	var runnerPinkBirdsImages = [ "pinkBird01_NB.png","pinkBird02_NB.png","pinkBird03_NB.png","pinkBird04_NB.png","pinkBird05_NB.png","pinkBird06_NB.png","pinkBird07_NB.png","pinkBird08_NB.png","pinkBird09_NB.png"];
+	var pinkBirdSpareArray = [];
+	function getPinkBird(){
+		var imgpb = [];
+		var pinkbird = {};
+		pinkbird.images = imgpb;
+		for(var i=0; i<runnerPinkBirdsImages.length; i++){
+			var bird = new Image();
+			bird.src = runnerPinkBirdsImages[i];
+			imgpb.push(bird); 
+		}
+		pinkbird.isActive = true;
+		pinkbird.height = 100;
+		pinkbird.width = 100;
+		pinkbird.x = width;
+		pinkbird.y = 200 + Math.random()*100;
+		pinkbird.speedX = -5 - (Math.random()*10);
+		pinkbird.speedY = 0;
+
+		pinkbird.move = function(){
+			this.x = this.x + this.speedX;
+			this.y = this.y + this.speedY;
+			if(this.x < -100){
+				this.isActive = false;
+			}
+		}
+		return pinkbird;
+	}
+
+
+//Cloud ------------------------------------------------------------------------------------------------------------------------------------
+
+		var runnerCloudImages = [];
+		var imgc = new Image();
+		imgc.src = "runnercloud_NB.png";
+
+		function getClouds(){
+		var runnerCloud = {};
+		runnerCloud.images = [imgc];
+		runnerCloud.x = width;
+		runnerCloud.y = 100 + Math.random()*75;
+		runnerCloud.isActive = true;
+		runnerCloud.width = 200;
+		runnerCloud.height = 100;
+		runnerCloud.speedX = -4 - (Math.random()*10);
+
+		runnerCloud.move = function(){
+			this.x = this.x + this.speedX;
+			if(this.x < -100){
+				this.isActive = false;
+			}
+		}
+		return runnerCloud;
+		}
+		
+// Draw Object Function --------------------------------------------------------------------------------------------------------------------
+		
+		function drawObject(object){
+			var currentImageIndex = counter%object.images.length;
+			var currentImage = object.images[currentImageIndex];
+			ctx.drawImage(currentImage,object.x-(object.width/2),object.y-(object.height/2),object.width,object.height);
+			if(1===object.repeatX){
+				ctx.drawImage(currentImage,object.width + object.x-(object.width/2),object.y-(object.height/2),object.width,object.height);
+			}
+		}
+
+// Show Image Function ---------------------------------------------------------------------------------------------------------------------
+		
+		var counter = 0;
+		var score = 0;
+		var defeated = false;
+
+		function showImage(){
+
+			counter++;
+			score++;
+			if(counter%30 == 0){
+				var cloud = getClouds();
+				runnerCloudImages.push(cloud);
+			}
+			if(counter%150 == 0 && counter<300){
+				var hurdle = getHurdle();
+				runnerHurdleImages.push(hurdle);
+			}
+			if(counter%190 ==0 && counter<300){
+				var snail = getSnail();
+				oneMoreSpareArray.push(snail);
+			}
+			if(counter%100 == 0 && counter<300){
+				var bird = getPinkBird();
+				pinkBirdSpareArray.push(bird);
+			}
+			if(counter == 300){
+				poleArray.push(pole);
+			}
+			
+			if(counter > 300 && counter<390){
+				//land.speedX = 0;
+				pole.speedX = 0;
+				runnerBoy.moveX();
+				audio.pause();
+  				audiob.pause();
+  				audiogo.play();
+			}
+			ctx.fillStyle = "#1E90FF";
+			ctx.fillRect(0,0,1515,700);
+//------------------------------------------------------------------------------------------------------------------------------------------
+			for(var i=0; i<poleArray.length; i++){
+				var pol = poleArray[i];
+				pole.move();
+				drawObject(pol);
+			}
+			
+//------------------------------------------------------------------------------------------------------------------------------------------
+			runnerBoy.move();
+			drawObject(runnerBoy);
+			if(runnerBoy.x > 1530){
+				ctx.fillStyle = "#800080";
+  				ctx.font = "bold 40px cursive";
+  				ctx.fillText("Congratulations Player, Level 1 completed!!!",370, 300);
+				clearInterval(myVar);
+			}
+			
+//------------------------------------------------------------------------------------------------------------------------------------------
+			
+			for(var i=0; i< runnerCloudImages.length; i++){
+				var cloud = runnerCloudImages[i];
+				cloud.move();
+				drawObject(cloud);
+				if(defeated == true){
+					bird.speedX = 0
+				}
+			}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+			
+			for(var i=0; i<pinkBirdSpareArray.length; i++){
+				var bird = pinkBirdSpareArray[i];
+				bird.move();
+				drawObject(bird);
+				if(defeated == true){
+					bird.speedX = 0
+				}
+			}
+//------------------------------------------------------------------------------------------------------------------------------------------
+			
+			ctx.fillStyle = "#000000";
+			ctx.font= "30px Arial";
+			ctx.fillText("Score : "+ parseInt(score/50), 200, 200);
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+			
+			var allHurdle = [];
+			for(var i=0; i<runnerHurdleImages.length;i++){
+				var hurdle = runnerHurdleImages[i];
+				hurdle.move();
+				drawObject(hurdle);
+				if( hurdle.isActive == true){
+					allHurdle.push(hurdle);
+				}
+				runnerHurdleImages = allHurdle;
+				var x1x2 = (hurdle.x - runnerBoy.x)*(hurdle.x - runnerBoy.x);
+				var y1y2 = (hurdle.y - runnerBoy.y)*(hurdle.y - runnerBoy.y);
+				var distance = Math.sqrt(x1x2 + y1y2);
+				if(distance <= 101.26){
+					hurdle.speedX = 0;
+					//land.speedX = 0;
+					defeated = true;
+					if(defeated == true){
+						defeated = false;
+						counter = 0;
+						ctx.fillStyle = "#ffffff4D";
+  						ctx.fillRect(200, 100, 1115, 500);
+  						ctx.strokeRect(201, 101 ,1115, 500);
+  						ctx.fillStyle = "#800080";
+  						ctx.font = "bold 40px cursive";
+  						ctx.fillText("Cheer Up Runner, better luck next time!!!",370, 300);
+  						restartGame();
+  						quitGame();
+  						audio.pause();
+  						audiob.pause();
+  						audiogo.play();
+  						clearInterval(myVar);
+					}
+				}
+			}
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+			var allSnails = [];
+			for(var i=0; i<oneMoreSpareArray.length; i++){
+				var snail = oneMoreSpareArray[i];
+				snail.move();
+				drawObject(snail);
+				if( snail.isActive == true){
+					allSnails.push(snail);
+				}
+				oneMoreSpareArray = allSnails;
+				var x1x2 = (snail.x - runnerBoy.x)*(snail.x - runnerBoy.x);
+				var y1y2 = (snail.y - runnerBoy.y)*(snail.y - runnerBoy.y);
+				var distance = Math.sqrt(x1x2 + y1y2);
+				if(distance <= 101.26){
+					snail.speedX = 0;
+					//land.speedX = 0;
+					defeated = true;
+					if(defeated == true){
+						defeated = false;
+						counter = 0;
+						ctx.fillStyle = "#ffffff4D";
+  						ctx.fillRect(200, 100, 1115, 500);
+  						ctx.strokeRect(201, 101 ,1115, 500);
+  						ctx.fillStyle = "#800080";
+  						ctx.font = "bold 40px cursive";
+  						ctx.fillText("Cheer Up Runner, better luck next time!!!",370, 300);
+  						restartGame();
+  						quitGame();
+  						audio.pause();
+  						audiob.pause();
+  						audiogo.play();
+  						clearInterval(myVar);
+					}
+				}
+			}
+//------------------------------------------------------------------------------------------------------------------------------------------
+			//land.move();
+			//drawObject(land);
+			
+		}
+
+// KeyBoard Events -------------------------------------------------------------------------------------------------------------------------
+		var isMusicPlaying = false;
+		
+		document.addEventListener("keydown", function(event) {
+				if(event.keyCode == 32){
+					playJumpAudio();
+					if(runnerBoy.y = 590){
+					runnerBoy.speedY = -50;
+				}
+				}
+				if(!isMusicPlaying){
+					StartGame();
+				}
+			});
+		var myVar = setInterval(showImage, 50);
+	</script>
+</body>
+</html>
