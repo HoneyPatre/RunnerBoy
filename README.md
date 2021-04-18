@@ -2,6 +2,7 @@
 
 ### Demo
 
+![Demo](Demo.gif)
 
 
 > The project, “RunnerBoy” is a simple HTML and JS application consisting of animated characters.
