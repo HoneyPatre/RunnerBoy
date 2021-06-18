@@ -5,7 +5,7 @@
 ![Demo](Demo.gif)
 
 
-> The project, “RunnerBoy” is a simple HTML and JS application consisting of animated characters.
+> The project, “RunnerBoy” is a simple HTML and JavaScript application consisting of animated characters.
 
 ## 🏃‍ [Play](https://honeypatre.github.io/RunnerBoy/)
 ### 🏠 [Homepage](https://github.com/HoneyPatre/)
